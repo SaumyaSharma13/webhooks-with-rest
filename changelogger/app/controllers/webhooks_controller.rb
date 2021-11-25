@@ -2,10 +2,11 @@ class WebhooksController < ApplicationController
   WEBHOOK_HEADERS = ["HTTP_USER_AGENT", "CONTENT_TYPE", "HTTP_X_GITHUB_EVENT", "HTTP_X_GITHUB_DELIVERY", "HTTP_X_HUB_SIGNATURE"]
 
 #  before_action :verify_signature!
-#  before_action :verify_event_type!
+  before_action :verify_event_type!
 
   def create
-#    return error("not labeled") unless labeled?
+    puts "The current user is #{octokit.user.login}"
+    return error("not labeled") unless labeled?
 #    return error("not closed") unless closed?
 #    return error("not merged") unless merged_into_master?
 
@@ -29,17 +30,17 @@ class WebhooksController < ApplicationController
     render(status: 422, json: text)
   end
 
-#  def verify_event_type!
-#    type = request.headers["HTTP_X_GITHUB_EVENT"]
-#    return if type == "pull_request"
-#    error("unallowed event type: #{type}")
-#  end
+  def verify_event_type!
+    type = request.headers["HTTP_X_GITHUB_EVENT"]
+    return if type == "pull_request"
+    error("unallowed event type: #{type}")
+  end
 
-#  def labeled?
-#    payload["pull_request"]["labels"].any? do |label|
-#      label["name"] == "documentation"
-#    end
-#  end
+  def labeled?
+    payload["pull_request"]["labels"].any? do |label|
+      label["name"] == "documentation"
+    end
+  end
 
 #  def closed?
 #    payload["action"] == "closed"
@@ -52,9 +53,9 @@ class WebhooksController < ApplicationController
 #    merged && in_to_master
 #  end
 
-#  def octokit
-#    Octokit::Client.new(access_token: ENV["GITHUB_PERSONAL_ACCESS_TOKEN"])
-#  end
+  def octokit
+    Octokit::Client.new(access_token: ENV["GITHUB_PERSONAL_ACCESS_TOKEN"])
+  end
 
 #  def create_changelog_entry
 #    content, sha = get_file
