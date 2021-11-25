@@ -2,7 +2,7 @@ class WebhooksController < ApplicationController
   WEBHOOK_HEADERS = ["HTTP_USER_AGENT", "CONTENT_TYPE", "HTTP_X_GITHUB_EVENT", "HTTP_X_GITHUB_DELIVERY", "HTTP_X_HUB_SIGNATURE"]
 
 #  before_action :verify_signature!
-#  before_action :verify_event_type!
+  before_action :verify_event_type!
 
   def create
 #    return error("not labeled") unless labeled?
@@ -29,11 +29,11 @@ class WebhooksController < ApplicationController
     render(status: 422, json: text)
   end
 
-#  def verify_event_type!
-#    type = request.headers["HTTP_X_GITHUB_EVENT"]
-#    return if type == "pull_request"
-#    error("unallowed event type: #{type}")
-#  end
+  def verify_event_type!
+    type = request.headers["HTTP_X_GITHUB_EVENT"]
+    return if type == "pull_request"
+    error("unallowed event type: #{type}")
+  end
 
 #  def labeled?
 #    payload["pull_request"]["labels"].any? do |label|
